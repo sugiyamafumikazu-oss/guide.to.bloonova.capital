@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>日本価値創造パートナーズ様 裁量労働制導入ダッシュボード</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap');
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+            scroll-behavior: smooth;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .tab-btn.active {
+            border-bottom: 2px solid #1d4ed8;
+            color: #1d4ed8;
+            font-weight: 700;
+        }
+        .accordion-content {
+            display: none;
+        }
+        .accordion-content.open {
+            display: block;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
+</head>
+<body class="antialiased">
+
+<!-- Chosen Palette: Professional Trust (Slate-50 bg, Slate-800 text, Blue-700/Blue-600 accents) -->
+<!-- Application Structure Plan: A dashboard-style SPA tailored for the client (BlooNova Capital / 日本価値創造パートナーズ). It features a sticky navigation, an executive summary with a dynamic progress tracker (Chart.js donut), a section evaluating which system to choose (tabbed interface), a step-by-step roadmap with interactive checklists, and detailed rule customization guidelines (accordion style). This structure guides the HR manager sequentially through the complex legal requirements and provides a practical tool to track progress. -->
+<!-- Visualization & Content Choices: 
+  - Goal: Inform on Progress -> Viz: Donut Chart (Chart.js) -> Interaction: Updates via Checklist -> Justification: Provides immediate feedback on implementation status. 
+  - Goal: Compare Systems -> Viz: Tabbed layout -> Interaction: Click tabs to switch content -> Justification: Prevents information overload when deciding between Specialized and Planning types.
+  - Goal: Change/Process -> Viz: HTML/CSS Timeline -> Interaction: Scroll-based viewing -> Justification: Clearly outlines chronological steps required for legal compliance.
+  - Goal: Organize Documents -> Viz: Accordion lists for rules -> Interaction: Click to expand details -> Justification: Keeps the UI clean while providing deep dives into specific legal clauses (ZeLo Model based). 
+-->
+<!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <!-- Navigation -->
+    <nav class="bg-slate-900 text-white sticky top-0 z-50 shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <span class="font-bold text-xl tracking-wider">BlooNova Capital HR-Navi</span>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="#summary" class="hover:bg-slate-700 px-3 py-2 rounded-md text-sm font-medium transition">概要・進捗</a>
+                        <a href="#system-choice" class="hover:bg-slate-700 px-3 py-2 rounded-md text-sm font-medium transition">制度の選択</a>
+                        <a href="#roadmap" class="hover:bg-slate-700 px-3 py-2 rounded-md text-sm font-medium transition">導入ロードマップ</a>
+                        <a href="#documents" class="hover:bg-slate-700 px-3 py-2 rounded-md text-sm font-medium transition">規程カスタマイズ</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header / Intro -->
+    <header class="bg-blue-800 text-white py-12 px-4 shadow-inner">
+        <div class="max-w-4xl mx-auto text-center">
+            <h1 class="text-3xl md:text-4xl font-bold mb-4">新設法人「日本価値創造パートナーズ」<br>裁量労働制 導入コンプライアンス・ガイド</h1>
+            <p class="text-lg text-blue-100 mb-6">4月入社予定の新規採用者（年収1100万円想定）に対する裁量労働制の適法な導入手順と、就業規則・賃金規程・雇用契約書の改定ポイントをご案内します。2024年4月の法改正に完全対応しています。</p>
+            <div class="inline-block bg-white text-blue-800 px-4 py-2 rounded-full font-semibold text-sm">
+                担当：杉山 史和（社会保険労務士）
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-16">
+
+        <!-- Section: Summary & Progress -->
+        <section id="summary" class="scroll-mt-20">
+            <div class="mb-6 border-l-4 border-blue-600 pl-4">
+                <h2 class="text-2xl font-bold text-slate-800">1. プロジェクト概要と導入進捗</h2>
+                <p class="text-slate-600 mt-2">対象となる従業員の要件と、導入に向けた現在のタスク消化状況を可視化します。以下のロードマップのチェックリストを操作するとグラフが連動します。</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <!-- Project Info -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                    <h3 class="text-lg font-bold mb-4 border-b pb-2">◆ 採用・適用条件の整理</h3>
+                    <ul class="space-y-3">
+                        <li class="flex justify-between items-center"><span class="text-slate-500">対象法人</span> <span class="font-semibold">日本価値創造パートナーズ</span></li>
+                        <li class="flex justify-between items-center"><span class="text-slate-500">導入時期</span> <span class="font-semibold text-blue-600">本年4月1日〜</span></li>
+                        <li class="flex justify-between items-center"><span class="text-slate-500">対象人数</span> <span class="font-semibold">1名</span></li>
+                        <li class="flex justify-between items-center"><span class="text-slate-500">想定年収</span> <span class="font-semibold">1,100万円</span></li>
+                        <li class="flex justify-between items-center"><span class="text-slate-500">重要法改正</span> <span class="font-semibold text-red-600">「本人の同意」が必須化（2024年4月〜）</span></li>
+                    </ul>
+                    <div class="mt-6 p-4 bg-yellow-50 rounded-lg text-sm text-yellow-800">
+                        <span class="font-bold">⚠ 専門家からのアドバイス：</span><br>
+                        新設法人で1名雇用の場合、「企画業務型裁量労働制」は労使委員会の設置が必要となり手続的負担が過大です。対象者の業務内容を精査し、可能な限り<span class="font-bold text-red-600">「専門業務型裁量労働制」</span>を適用することを強く推奨します。
+                    </div>
+                </div>
+
+                <!-- Progress Chart -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 flex flex-col items-center">
+                    <h3 class="text-lg font-bold mb-2">◆ 導入タスク進捗状況</h3>
+                    <div class="chart-container h-64 w-full">
+                        <canvas id="progressChart"></canvas>
+                    </div>
+                    <div class="mt-4 text-center">
+                        <span id="progressText" class="text-2xl font-bold text-blue-700">0%</span> 完了
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section: System Choice -->
+        <section id="system-choice" class="scroll-mt-20">
+            <div class="mb-6 border-l-4 border-blue-600 pl-4">
+                <h2 class="text-2xl font-bold text-slate-800">2. 専門業務型か？企画業務型か？</h2>
+                <p class="text-slate-600 mt-2">裁量労働制には2種類あります。今回のケースにどちらが適しているか、要件と手続きの違いを確認してください。</p>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="flex border-b border-slate-200 bg-slate-50">
+                    <button class="tab-btn active flex-1 py-4 text-center font-medium hover:bg-slate-100 transition focus:outline-none" data-target="tab-senmon">
+                        専門業務型裁量労働制（推奨）
+                    </button>
+                    <button class="tab-btn flex-1 py-4 text-center font-medium text-slate-500 hover:bg-slate-100 transition focus:outline-none" data-target="tab-kikaku">
+                        企画業務型裁量労働制
+                    </button>
+                </div>
+
+                <div class="p-6">
+                    <!-- Tab Content: 専門業務型 -->
+                    <div id="tab-senmon" class="tab-content block">
+                        <h3 class="text-xl font-bold text-blue-800 mb-3">専門業務型裁量労働制（法第38条の3）</h3>
+                        <p class="mb-4">業務の性質上、遂行手段や時間配分を大幅に労働者の裁量に委ねる必要がある特定の業務（19業務+1業務）に限定されます。</p>
+                        
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <h4 class="font-semibold text-slate-700 mb-2 border-b pb-1">■ 対象となる主な業務</h4>
+                                <ul class="list-disc pl-5 space-y-1 text-sm text-slate-600">
+                                    <li>証券アナリスト</li>
+                                    <li>金融工学等の知識を用いた金融商品の開発</li>
+                                    <li><span class="font-bold text-blue-600">M&Aに関する調査・分析・考案・助言（※2024年4月追加）</span></li>
+                                    <li>情報処理システムの分析又は設計</li>
+                                    <li>コピーライター、デザイナー、コンサルタント等</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-slate-700 mb-2 border-b pb-1">■ 導入手続き</h4>
+                                <ol class="list-decimal pl-5 space-y-1 text-sm text-slate-600">
+                                    <li>労働者の過半数代表者の選出</li>
+                                    <li><span class="font-bold text-red-600">労使協定</span>の締結</li>
+                                    <li>労働基準監督署への届出</li>
+                                    <li><span class="font-bold text-red-600">本人同意の取得（書面等）※2024年法改正</span></li>
+                                </ol>
+                            </div>
+                        </div>
+                        <div class="mt-4 p-3 bg-blue-50 text-blue-800 text-sm rounded border border-blue-100">
+                            <strong>結論：</strong> 今回の採用者がコンサルティング業務やM&A関連業務、システム設計等に従事する場合、こちらの制度での導入が最もスムーズです。
+                        </div>
+                    </div>
+
+                    <!-- Tab Content: 企画業務型 -->
+                    <div id="tab-kikaku" class="tab-content hidden">
+                        <h3 class="text-xl font-bold text-purple-800 mb-3">企画業務型裁量労働制（法第38条の4）</h3>
+                        <p class="mb-4">事業の運営に関する事項についての企画、立案、調査及び分析を行う労働者が対象です。業務の限定はありませんが、手続きが非常に厳格です。</p>
+                        
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <h4 class="font-semibold text-slate-700 mb-2 border-b pb-1">■ 対象となる主な業務</h4>
+                                <ul class="list-disc pl-5 space-y-1 text-sm text-slate-600">
+                                    <li>経営企画、事業企画</li>
+                                    <li>人事・労務制度の企画立案</li>
+                                    <li>財務・経理の企画立案</li>
+                                    <li>営業手法の企画立案（※単なる営業活動は不可）</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-slate-700 mb-2 border-b pb-1">■ 導入手続き</h4>
+                                <ol class="list-decimal pl-5 space-y-1 text-sm text-slate-600">
+                                    <li><span class="font-bold text-red-600">労使委員会の設置</span>（労使同数等、厳格な要件）</li>
+                                    <li>労使委員会における<span class="font-bold text-red-600">5分の4以上の多数による決議</span></li>
+                                    <li>労働基準監督署への届出</li>
+                                    <li>本人同意の取得（書面等）</li>
+                                    <li>定期的な状況報告（6ヶ月以内ごと）</li>
+                                </ol>
+                            </div>
+                        </div>
+                        <div class="mt-4 p-3 bg-red-50 text-red-800 text-sm rounded border border-red-100">
+                            <strong>結論：</strong> 新設法人で従業員1名の場合、労使委員会の構成員をどうするか等の物理的・法的なハードルが高いため、今回は見送るべきです。
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section: Roadmap & Checklist -->
+        <section id="roadmap" class="scroll-mt-20">
+            <div class="mb-6 border-l-4 border-blue-600 pl-4">
+                <h2 class="text-2xl font-bold text-slate-800">3. 導入スケジュールとタスク管理（専門業務型）</h2>
+                <p class="text-slate-600 mt-2">現在（令和8年3月10日）から4月1日の入社に向けたスケジュールです。<strong class="text-red-600">現在従業員数が0名のため、過半数代表者の選出や労使協定の締結は4月1日の入社後に行う</strong>という特殊なフローになります。</p>
+            </div>
+
+            <div class="relative border-l-2 border-blue-200 ml-3 md:ml-6 space-y-8 pb-4">
+                
+                <!-- Phase 1: 3月中 -->
+                <div class="relative pl-8 md:pl-10">
+                    <div class="absolute -left-3.5 bg-blue-600 h-7 w-7 rounded-full border-4 border-white flex items-center justify-center text-white text-xs font-bold">1</div>
+                    <h3 class="font-bold text-xl text-blue-800 mb-1">【入社前準備】 令和8年（2026年）3月中</h3>
+                    <p class="text-sm text-slate-500 mb-4">入社予定者への説明資料と、各種規程・協定の「原案」を作成するフェーズです。</p>
+                    
+                    <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm space-y-3">
+                        <label class="flex items-start space-x-3 cursor-pointer p-2 hover:bg-slate-50 rounded">
+                            <input type="checkbox" class="task-checkbox mt-1 w-5 h-5 text-blue-600 rounded border-slate-300 focus:ring-blue-500">
+                            <span class="text-slate-700"><span class="font-bold">制度設計の確定：</span> 対象業務（第19号業務等）、みなし労働時間、健康確保措置（下部で選択）を確定する</span>
+                        </label>
+                        <label class="flex items-start space-x-3 cursor-pointer p-2 hover:bg-slate-50 rounded">
+                            <input type="checkbox" class="task-checkbox mt-1 w-5 h-5 text-blue-600 rounded border-slate-300 focus:ring-blue-500">
+                            <span class="text-slate-700"><span class="font-bold">規程・協定原案の作成：</span> 就業規則、賃金規程、労使協定（様式第13号）、36協定のドラフトを作成する</span>
+                        </label>
+                        <label class="flex items-start space-x-3 cursor-pointer p-2 hover:bg-slate-50 rounded">
+                            <input type="checkbox" class="task-checkbox mt-1 w-5 h-5 text-blue-600 rounded border-slate-300 focus:ring-blue-500">
+                            <span class="text-slate-700"><span class="font-bold">雇用契約書の作成：</span> 裁量労働制の適用、みなし時間、同意取得欄を含めた労働条件通知書兼雇用契約書を作成する</span>
+                        </label>
+                        <label class="flex items-start space-x-3 cursor-pointer p-2 hover:bg-slate-50 rounded p-3 bg-red-50 border border-red-100">
+                            <input type="checkbox" class="task-checkbox mt-1 w-5 h-5 text-red-600 rounded border-red-300 focus:ring-red-500">
+                            <span class="text-slate-800"><span class="font-bold text-red-600">事前説明の実施：</span> 入社予定者に対し、制度内容（みなし時間や残業代の扱い）や同意の撤回等について事前に説明を行う（※法改正で重要視されています）</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Phase 2: 4月1日～ -->
+                <div class="relative pl-8 md:pl-10">
+                    <div class="absolute -left-3.5 bg-red-500 h-7 w-7 rounded-full border-4 border-white flex items-center justify-center text-white text-xs font-bold">2</div>
+                    <h3 class="font-bold text-xl text-red-700 mb-1">【入社後手続き・届出】 令和8年（2026年）4月1日以降</h3>
+                    <p class="text-sm text-slate-500 mb-4">従業員が入社して初めて「過半数代表者」が誕生し、法的な協定締結と労基署への届出が可能になります。</p>
+                    
+                    <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm space-y-3 border-l-4 border-l-red-500">
+                        <label class="flex items-start space-x-3 cursor-pointer p-2 hover:bg-slate-50 rounded">
+                            <input type="checkbox" class="task-checkbox mt-1 w-5 h-5 text-blue-600 rounded border-slate-300 focus:ring-blue-500">
+                            <span class="text-slate-700"><span class="font-bold">同意書の取得（4/1）：</span> 入社日当日に、雇用契約書への署名捺印と合わせ、裁量労働制への「同意」を取得する</span>
+                        </label>
+                        <label class="flex items-start space-x-3 cursor-pointer p-2 hover:bg-slate-50 rounded">
+                            <input type="checkbox" class="task-checkbox mt-1 w-5 h-5 text-blue-600 rounded border-slate-300 focus:ring-blue-500">
+                            <span class="text-slate-700"><span class="font-bold">過半数代表者の選出（4/1）：</span> 従業員が1名であるため、必然的に当該従業員が労働者代表となる旨を確認する</span>
+                        </label>
+                        <label class="flex items-start space-x-3 cursor-pointer p-2 hover:bg-slate-50 rounded">
+                            <input type="checkbox" class="task-checkbox mt-1 w-5 h-5 text-blue-600 rounded border-slate-300 focus:ring-blue-500">
+                            <span class="text-slate-700"><span class="font-bold">労使協定の締結（4/1）：</span> 会社（代表取締役）と労働者代表（新入社員）との間で、専門業務型裁量労働制の協定および36協定を締結（署名捺印）する</span>
+                        </label>
+                        <label class="flex items-start space-x-3 cursor-pointer p-2 hover:bg-slate-50 rounded">
+                            <input type="checkbox" class="task-checkbox mt-1 w-5 h-5 text-blue-600 rounded border-slate-300 focus:ring-blue-500">
+                            <span class="text-slate-700"><span class="font-bold">就業規則の意見書取得（4/1）：</span> 作成した就業規則に対し、労働者代表から意見書（署名捺印）を取得する</span>
+                        </label>
+                        <label class="flex items-start space-x-3 cursor-pointer p-2 hover:bg-slate-50 rounded p-3 bg-blue-50 border border-blue-100">
+                            <input type="checkbox" class="task-checkbox mt-1 w-5 h-5 text-blue-600 rounded border-blue-300 focus:ring-blue-500">
+                            <span class="text-slate-800"><span class="font-bold text-blue-800">労働基準監督署への届出（速やかに）：</span> 管轄の労基署へ「①就業規則（意見書添付）」「②専門業務型裁量労働制に関する協定届（様式13号）」「③36協定届」を提出する</span>
+                        </label>
+                        <label class="flex items-start space-x-3 cursor-pointer p-2 hover:bg-slate-50 rounded">
+                            <input type="checkbox" class="task-checkbox mt-1 w-5 h-5 text-blue-600 rounded border-slate-300 focus:ring-blue-500">
+                            <span class="text-slate-700"><span class="font-bold">各種保険手続き（速やかに）：</span> 労働保険（労災・雇用）、社会保険（健保・厚生年金）の事業所適用・被保険者資格取得手続きを行う</span>
+                        </label>
+                    </div>
+
+                    <div class="mt-4 p-4 text-sm text-yellow-800 bg-yellow-50 rounded-lg border border-yellow-200">
+                        <span class="font-bold text-yellow-900">💡 実務上のポイント：</span><br>
+                        本来、裁量労働制の協定届は「施行日（4/1）前」の届出が原則とされています。しかし今回のように従業員が0名で、4/1に入社して初めて労働者代表との協定が締結できるケースにおいては、<strong>4/1付で締結後、遅滞なく速やかに労基署へ届け出れば、実務上問題なく受理される</strong>ことが一般的です。
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Section: Documents Customization -->
+        <section id="documents" class="scroll-mt-20">
+            <div class="mb-6 border-l-4 border-blue-600 pl-4">
+                <h2 class="text-2xl font-bold text-slate-800">4. 各種規程のカスタマイズ案（ZeLo Modelベース）</h2>
+                <p class="text-slate-600 mt-2">ご提供いただいた「就業規則」「賃金規程」等のひな形に対し、裁量労働制を適用するために追記・修正が必要な条文です。クリックして詳細を確認してください。</p>
+            </div>
+
+            <div class="space-y-4">
+                
+                <!-- Accordion 0: 健康確保措置の選択 -->
+                <div class="bg-white border border-blue-200 rounded-lg shadow-sm">
+                    <button class="accordion-btn w-full px-6 py-4 flex justify-between items-center focus:outline-none bg-blue-50 rounded-t-lg">
+                        <span class="font-bold text-lg text-blue-900 flex items-center">
+                            <span class="text-2xl mr-3">🩺</span> 健康・福祉確保措置の選択（2024年法改正対応）
+                        </span>
+                        <span class="text-blue-400 transform transition-transform duration-200 open" style="transform: rotate(180deg);">▼</span>
+                    </button>
+                    <div class="accordion-content open px-6 pb-6 border-t border-blue-100 mt-2">
+                        <p class="mb-4 text-sm text-slate-600">添付の資料に基づき、導入予定の健康・福祉確保措置を選択してください。【措置A】から1つ以上、【措置B】から1つ以上の選択が義務付けられています。ここで選んだ内容は、下の就業規則案に自動反映されます。</p>
+                        
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <!-- 措置A -->
+                            <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-inner">
+                                <h4 class="font-bold text-blue-800 mb-3 text-sm border-b pb-2">【措置A】労働時間の状況等に応じて実施する措置<br><span class="text-xs font-normal text-red-500">（※1つ以上必須）</span></h4>
+                                <div class="space-y-2 text-sm text-slate-700">
+                                    <label class="flex items-start space-x-2 cursor-pointer hover:bg-slate-50 p-1 rounded"><input type="checkbox" value="代償休日又は半日休日の付与" class="measure-cb mt-1 text-blue-600 focus:ring-blue-500"><span>ア．代償休日又は半日休日の付与</span></label>
+                                    <label class="flex items-start space-x-2 cursor-pointer hover:bg-slate-50 p-1 rounded"><input type="checkbox" value="特別休暇（リフレッシュ休暇等）の付与" class="measure-cb mt-1 text-blue-600 focus:ring-blue-500"><span>イ．特別休暇（リフレッシュ休暇等）の付与</span></label>
+                                    <label class="flex items-start space-x-2 cursor-pointer hover:bg-slate-50 p-1 rounded"><input type="checkbox" value="健康診断の実施" class="measure-cb mt-1 text-blue-600 focus:ring-blue-500"><span>ウ．健康診断の実施</span></label>
+                                    <label class="flex items-start space-x-2 cursor-pointer hover:bg-slate-50 p-1 rounded"><input type="checkbox" value="連続休暇の付与" class="measure-cb mt-1 text-blue-600 focus:ring-blue-500"><span>エ．連続休暇の付与</span></label>
+                                    <label class="flex items-start space-x-2 cursor-pointer hover:bg-slate-50 p-1 rounded"><input type="checkbox" value="心とからだの健康問題についての相談窓口の設置" class="measure-cb mt-1 text-blue-600 focus:ring-blue-500" checked><span>オ．心とからだの健康問題についての相談窓口の設置</span></label>
+                                    <label class="flex items-start space-x-2 cursor-pointer hover:bg-slate-50 p-1 rounded"><input type="checkbox" value="配置転換の実施" class="measure-cb mt-1 text-blue-600 focus:ring-blue-500"><span>カ．配置転換の実施</span></label>
+                                    <label class="flex items-start space-x-2 cursor-pointer hover:bg-slate-50 p-1 rounded"><input type="checkbox" value="産業医等による助言・指導、保健指導等" class="measure-cb mt-1 text-blue-600 focus:ring-blue-500"><span>キ．産業医等による助言・指導、保健指導等</span></label>
+                                </div>
+                            </div>
+
+                            <!-- 措置B -->
+                            <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-inner">
+                                <h4 class="font-bold text-green-800 mb-3 text-sm border-b pb-2">【措置B】労働時間の状況等によらず実施する措置<br><span class="text-xs font-normal text-red-500">（※1つ以上必須）</span></h4>
+                                <div class="space-y-2 text-sm text-slate-700">
+                                    <label class="flex items-start space-x-2 cursor-pointer hover:bg-slate-50 p-1 rounded"><input type="checkbox" value="終業から始業までの一定の休息時間の確保（勤務間インターバル）" class="measure-cb mt-1 text-green-600 focus:ring-green-500"><span>ク．勤務間インターバル制度の導入</span></label>
+                                    <label class="flex items-start space-x-2 cursor-pointer hover:bg-slate-50 p-1 rounded"><input type="checkbox" value="深夜業の回数制限" class="measure-cb mt-1 text-green-600 focus:ring-green-500"><span>ケ．深夜業の回数制限</span></label>
+                                    <label class="flex items-start space-x-2 cursor-pointer hover:bg-slate-50 p-1 rounded"><input type="checkbox" value="労働時間の上限措置" class="measure-cb mt-1 text-green-600 focus:ring-green-500"><span>コ．労働時間の上限措置</span></label>
+                                    <label class="flex items-start space-x-2 cursor-pointer hover:bg-slate-50 p-1 rounded"><input type="checkbox" value="年次有給休暇についてまとまった日数の取得促進" class="measure-cb mt-1 text-green-600 focus:ring-green-500" checked><span>サ．年次有給休暇の連続取得の促進</span></label>
+                                    <label class="flex items-start space-x-2 cursor-pointer hover:bg-slate-50 p-1 rounded"><input type="checkbox" value="一定の労働時間を超える対象労働者に対する医師による面接指導" class="measure-cb mt-1 text-green-600 focus:ring-green-500"><span>シ．一定時間を超えた場合の医師の面接指導</span></label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4 p-4 bg-slate-800 text-white rounded-lg text-sm shadow">
+                            <strong class="text-yellow-400">📝 労使協定・就業規則 記載プレビュー</strong><br>
+                            会社は、対象労働者の健康・福祉を確保するため、次の措置を講ずる。<br>
+                            <ul class="list-disc pl-5 mt-2 space-y-1" id="measure-preview">
+                                <li>心とからだの健康問題についての相談窓口の設置</li>
+                                <li>年次有給休暇についてまとまった日数の取得促進</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Accordion 1: 就業規則 -->
+                <div class="bg-white border border-slate-200 rounded-lg shadow-sm">
+                    <button class="accordion-btn w-full px-6 py-4 flex justify-between items-center focus:outline-none">
+                        <span class="font-bold text-lg text-slate-800 flex items-center">
+                            <span class="text-2xl mr-3">📄</span> 就業規則への追加・修正事項
+                        </span>
+                        <span class="text-slate-400 transform transition-transform duration-200">▼</span>
+                    </button>
+                    <div class="accordion-content px-6 pb-6 border-t border-slate-100 mt-2">
+                        <div class="mt-4 bg-slate-50 p-4 rounded text-sm text-slate-700 border-l-4 border-slate-300">
+                            <p class="font-bold mb-2">【追加案】第●章 労働時間・休憩・休日（※「変形労働時間制」等の次に新設）</p>
+                            <p class="font-semibold text-blue-800">第●条（専門業務型裁量労働制）</p>
+                            <ol class="list-decimal pl-5 space-y-2 mt-2">
+                                <li>会社は、事業の運営に関する専門的な業務であって、業務の性質上、業務遂行の手段及び時間配分の決定等に関し具体的な指示をすることが困難な業務に従事する従業員であって、会社が指定する者に対し、労使協定の定めるところにより、専門業務型裁量労働制を適用する。</li>
+                                <li>前項の従業員については、その業務遂行の手段及び時間配分については当該従業員の裁量に委ねるものとし、会社は具体的な指示を行わない。また、始業及び終業の時刻についても本人の決定に委ねるものとする。</li>
+                                <li>本条の規定を適用する従業員については、実際の労働時間にかかわらず、労使協定で定めるみなし労働時間（例：1日9時間）を労働したものとみなす。</li>
+                                <li>本条の規定を適用する場合であっても、会社は従業員の健康確保のため、労働時間の状況の把握を行い、<span id="rule-measure-preview" class="text-blue-700 font-bold bg-blue-100 px-1 rounded">心とからだの健康問題についての相談窓口の設置、年次有給休暇についてまとまった日数の取得促進</span> 等の措置を講ずる。</li>
+                                <li><span class="text-red-600 font-bold">【2024年法改正対応】</span> 本条の制度の適用に当たっては、従業員本人の同意を得るものとする。同意をしなかった場合においても、これを理由とする解雇その他不利益な取扱いは行わない。また、従業員は別に定める手続きにより、同意を撤回することができる。</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Accordion 2: 賃金規程 -->
+                <div class="bg-white border border-slate-200 rounded-lg shadow-sm">
+                    <button class="accordion-btn w-full px-6 py-4 flex justify-between items-center focus:outline-none">
+                        <span class="font-bold text-lg text-slate-800 flex items-center">
+                            <span class="text-2xl mr-3">💰</span> 賃金規程への追加・修正事項
+                        </span>
+                        <span class="text-slate-400 transform transition-transform duration-200">▼</span>
+                    </button>
+                    <div class="accordion-content px-6 pb-6 border-t border-slate-100 mt-2">
+                        <p class="mb-4 text-sm text-slate-600">裁量労働制であっても、「みなし時間が法定労働時間（8時間）を超える場合」の割増賃金、および「深夜労働」「休日労働」に対する割増賃金の支払い義務は免除されません。ZeLoモデルの第4章（割増賃金）に関連条文を追記します。</p>
+                        
+                        <div class="bg-slate-50 p-4 rounded text-sm text-slate-700 border-l-4 border-slate-300">
+                            <p class="font-bold mb-2">【追加案】第●条（裁量労働制の割増賃金等）</p>
+                            <ol class="list-decimal pl-5 space-y-2">
+                                <li>就業規則第●条に基づき専門業務型裁量労働制が適用される従業員に対しては、労使協定で定めるみなし労働時間が法定労働時間（1日8時間）を超える場合、その超えた時間について、第●条（時間外労働手当）の規定に準じて計算した時間外割増賃金を支給する。<br>
+                                <span class="text-xs text-slate-500">（※本件では年収1100万のため、基本給に一定時間分の固定残業代を含める設計とするか、みなし時間＝8時間とするか、方針決定が必要です。）</span></li>
+                                <li>前項の従業員が、午後10時から午前5時までの間に労働した場合は、前項の規定にかかわらず、実際に労働した時間に対して深夜労働割増賃金を支給する。</li>
+                                <li>前項の従業員が、法定休日に労働した場合は、前項の規定にかかわらず、実際に労働した時間に対して休日労働割増賃金を支給する。</li>
+                            </ol>
+                        </div>
+                        
+                        <div class="mt-4 p-4 border border-blue-200 bg-blue-50 rounded-lg">
+                            <h4 class="font-bold text-blue-800 mb-2">📊 残業代発生の考え方イメージ</h4>
+                            <div class="chart-container h-48 w-full mt-2">
+                                <canvas id="overtimeChart"></canvas>
+                            </div>
+                            <p class="text-xs text-blue-700 mt-2 text-center">※みなし時間を9時間に設定した場合、毎日1時間分の残業代（固定または変動）の支払いが必要になります。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Accordion 3: 雇用契約書 -->
+                <div class="bg-white border border-slate-200 rounded-lg shadow-sm">
+                    <button class="accordion-btn w-full px-6 py-4 flex justify-between items-center focus:outline-none">
+                        <span class="font-bold text-lg text-slate-800 flex items-center">
+                            <span class="text-2xl mr-3">🤝</span> 雇用契約書（労働条件通知書）の注意点
+                        </span>
+                        <span class="text-slate-400 transform transition-transform duration-200">▼</span>
+                    </button>
+                    <div class="accordion-content px-6 pb-6 border-t border-slate-100 mt-2">
+                        <p class="mb-4 text-sm text-slate-600">2024年4月からの法改正により、書面等での明示事項が追加されています。以下の事項を契約書に盛り込む必要があります。</p>
+                        <ul class="list-disc pl-5 space-y-3 text-sm text-slate-700">
+                            <li><strong>労働時間の明示：</strong> 「専門業務型裁量労働制を適用する。1日当たりのみなし労働時間は●時間とする。」</li>
+                            <li><strong>始終業時刻の委ね：</strong> 「始業・終業の時刻は労働者の決定に委ねる。」（基本となる時間帯を記載することは可能）</li>
+                            <li><strong class="text-red-600">本人の同意の取得欄：</strong> 「私は、会社から専門業務型裁量労働制の適用について説明を受け、同制度が適用されることに同意します。[署名・捺印欄]」</li>
+                            <li><strong class="text-red-600">同意の撤回手続き：</strong> 「本同意は、会社所定の書面（同意撤回申出書）を人事担当部署に提出することにより、いつでも撤回することができる。」</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Accordion 4: 労使協定書サンプル -->
+                <div class="bg-white border border-slate-200 rounded-lg shadow-sm">
+                    <button class="accordion-btn w-full px-6 py-4 flex justify-between items-center focus:outline-none">
+                        <span class="font-bold text-lg text-slate-800 flex items-center">
+                            <span class="text-2xl mr-3">✍️</span> 労使協定書（様式第13号）サンプル
+                        </span>
+                        <span class="text-slate-400 transform transition-transform duration-200">▼</span>
+                    </button>
+                    <div class="accordion-content px-6 pb-6 border-t border-slate-100 mt-2">
+                        <p class="mb-4 text-sm text-slate-600">労働基準監督署に提出する「専門業務型裁量労働制に関する協定届（様式第13号）」の記載例です。2024年法改正で追加された必須項目を網羅しています。※上部の「健康確保措置の選択」と連動しています。</p>
+                        
+                        <!-- 協定書プレビュー領域 -->
+                        <div class="p-8 border-2 border-slate-400 bg-white font-serif text-sm text-slate-800 shadow-inner overflow-x-auto">
+                            <div class="text-center font-bold text-xl mb-6 tracking-widest">専門業務型裁量労働制に関する協定届<br>（様式第１３号 記載例）</div>
+                            <div class="text-right mb-4">令和●年●月●日<br>●●労働基準監督署長 殿</div>
+                            
+                            <table class="w-full border-collapse border border-slate-600 mb-6">
+                                <tr>
+                                    <th class="border border-slate-600 p-2 w-1/4 text-center bg-slate-50">事業の種類</th>
+                                    <td class="border border-slate-600 p-2 w-1/4">投資業（金融業）</td>
+                                    <th class="border border-slate-600 p-2 w-1/4 text-center bg-slate-50">事業の名称</th>
+                                    <td class="border border-slate-600 p-2 w-1/4">日本価値創造パートナーズ</td>
+                                </tr>
+                                <tr>
+                                    <th class="border border-slate-600 p-2 text-center bg-slate-50">事業場の所在地</th>
+                                    <td class="border border-slate-600 p-2" colspan="3">東京都港区●● 1-2-3</td>
+                                </tr>
+                            </table>
+
+                            <div class="mb-4 leading-relaxed">
+                                <p>日本価値創造パートナーズ（以下「会社」という。）と従業員代表●●●●は、専門業務型裁量労働制に関し、以下の通り協定する。</p>
+                            </div>
+
+                            <ol class="list-decimal pl-6 space-y-4 leading-relaxed">
+                                <li>
+                                    <strong>（対象業務）</strong><br>
+                                    会社は、以下の業務に従事する従業員に対し、専門業務型裁量労働制を適用する。<br>
+                                    <span class="underline decoration-slate-400 underline-offset-4">顧客の合併及び買収に関する調査又は分析及びこれに基づく合併及び買収に関する考案及び助言の業務（第19号業務）</span>
+                                </li>
+                                <li>
+                                    <strong>（みなし労働時間）</strong><br>
+                                    対象業務に従事する従業員の1日あたりのみなし労働時間は、<strong>９時間</strong>とする。
+                                </li>
+                                <li>
+                                    <strong>（具体的な指示の制限）</strong><br>
+                                    会社は、対象労働者の業務遂行の手段及び時間配分の決定等に関し、具体的な指示を行わないものとする。
+                                </li>
+                                <li>
+                                    <strong>（健康・福祉を確保するための措置）</strong><br>
+                                    会社は、対象労働者の労働時間の状況に応じて、以下の措置を講ずる。<br>
+                                    <div id="agreement-measure-preview" class="ml-4 mt-2 font-bold text-slate-800 border-b border-slate-800 inline-block min-w-[300px]">心とからだの健康問題についての相談窓口の設置、年次有給休暇についてまとまった日数の取得促進</div>
+                                </li>
+                                <li>
+                                    <strong>（苦情処理措置）</strong><br>
+                                    会社は、対象労働者からの申出窓口を「人事部」とし、苦情の申し出があった場合は、誠実に対応し必要な措置を講じる。
+                                </li>
+                                <li>
+                                    <strong>（同意及び不利益取扱いの禁止）<span class="text-red-600 text-xs ml-1">※法改正追加</span></strong><br>
+                                    本制度の適用にあたっては、対象労働者本人の同意を得るものとする。また、会社は、同意をしなかった労働者に対し、解雇その他不利益な取扱いを行わない。
+                                </li>
+                                <li>
+                                    <strong>（同意の撤回）<span class="text-red-600 text-xs ml-1">※法改正追加</span></strong><br>
+                                    対象労働者は、会社所定の書面を人事部に提出することにより、いつでも本制度への同意を撤回することができる。
+                                </li>
+                                <li>
+                                    <strong>（記録の保存）</strong><br>
+                                    会社は、本協定に関する労働時間の状況、健康・福祉確保措置の実施状況、苦情処理措置の実施状況、同意及び同意の撤回の労働者ごとの記録を、協定の有効期間中及び期間満了後３年間保存する。
+                                </li>
+                                <li>
+                                    <strong>（有効期間）</strong><br>
+                                    本協定の有効期間は、令和●年４月１日から令和●年３月３１日までの１年間とする。
+                                </li>
+                            </ol>
+
+                            <div class="mt-10 flex justify-end">
+                                <table class="text-right">
+                                    <tr>
+                                        <td class="pr-4 pb-4">使用者 職氏名：</td>
+                                        <td class="pb-4">代表取締役 中山 ●●　印</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="pr-4">労働者代表 職氏名：</td>
+                                        <td>従業員代表 ●● ●●　印</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-slate-900 text-slate-400 py-8 text-center mt-12">
+        <p class="text-sm">© 2026 HR-Navi for BlooNova Capital / 日本価値創造パートナーズ</p>
+        <p class="text-xs mt-2">※本ダッシュボードは社労士の助言・提案をまとめたものであり、最終的な規程の法務チェックは顧問弁護士（ZeLo等）にもご確認ください。</p>
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            /* --- 1. Tab Navigation Logic --- */
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // Remove active classes
+                    tabBtns.forEach(b => b.classList.remove('active', 'text-blue-600'));
+                    tabBtns.forEach(b => b.classList.add('text-slate-500'));
+                    tabContents.forEach(c => {
+                        c.classList.remove('block');
+                        c.classList.add('hidden');
+                    });
+
+                    // Add active class to clicked
+                    btn.classList.add('active');
+                    btn.classList.remove('text-slate-500');
+                    const targetId = btn.getAttribute('data-target');
+                    const targetContent = document.getElementById(targetId);
+                    targetContent.classList.remove('hidden');
+                    targetContent.classList.add('block');
+                });
+            });
+
+            /* --- 2. Accordion Logic --- */
+            const accordionBtns = document.querySelectorAll('.accordion-btn');
+            
+            accordionBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const content = this.nextElementSibling;
+                    const icon = this.querySelector('span:last-child');
+                    
+                    if (content.classList.contains('open')) {
+                        content.classList.remove('open');
+                        icon.style.transform = 'rotate(0deg)';
+                    } else {
+                        content.classList.add('open');
+                        icon.style.transform = 'rotate(180deg)';
+                        
+                        // Overtime chart needs to be rendered/updated if it becomes visible
+                        if(content.querySelector('#overtimeChart') && !window.overtimeChartRendered) {
+                            renderOvertimeChart();
+                            window.overtimeChartRendered = true;
+                        }
+                    }
+                });
+            });
+
+            /* --- 3. Progress Chart Logic (Chart.js) --- */
+            const checkboxes = document.querySelectorAll('.task-checkbox');
+            const progressText = document.getElementById('progressText');
+            let progressChart;
+
+            function updateProgress() {
+                const total = checkboxes.length;
+                let checked = 0;
+                checkboxes.forEach(cb => {
+                    if (cb.checked) checked++;
+                });
+                
+                const percentage = Math.round((checked / total) * 100);
+                progressText.innerText = percentage + '%';
+
+                if (progressChart) {
+                    progressChart.data.datasets[0].data = [percentage, 100 - percentage];
+                    progressChart.update();
+                } else {
+                    const ctx = document.getElementById('progressChart').getContext('2d');
+                    progressChart = new Chart(ctx, {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['完了', '未完了'],
+                            datasets: [{
+                                data: [percentage, 100 - percentage],
+                                backgroundColor: ['#2563eb', '#e2e8f0'],
+                                borderWidth: 0,
+                                hoverOffset: 4
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            cutout: '75%',
+                            plugins: {
+                                legend: { display: false },
+                                tooltip: { enabled: false }
+                            }
+                        }
+                    });
+                }
+            }
+
+            // Initial call
+            updateProgress();
+
+            // Add event listeners
+            checkboxes.forEach(cb => {
+                cb.addEventListener('change', updateProgress);
+            });
+
+            /* --- 4. Overtime Chart Logic (Chart.js) --- */
+            function renderOvertimeChart() {
+                const ctx = document.getElementById('overtimeChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['法定労働時間', 'みなし労働時間(例)'],
+                        datasets: [
+                            {
+                                label: '基本労働時間',
+                                data: [8, 8],
+                                backgroundColor: '#94a3b8'
+                            },
+                            {
+                                label: '割増賃金対象（残業）',
+                                data: [0, 1], // みなし9時間の場合、1時間オーバー
+                                backgroundColor: '#dc2626'
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            x: { stacked: true },
+                            y: { 
+                                stacked: true,
+                                beginAtZero: true,
+                                max: 10,
+                                title: { display: true, text: '時間 (h)' }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    boxWidth: 12
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            /* --- 5. Health Measures Logic --- */
+            const measureCbs = document.querySelectorAll('.measure-cb');
+            const measurePreview = document.getElementById('measure-preview');
+            const ruleMeasurePreview = document.getElementById('rule-measure-preview');
+
+            function updateMeasures() {
+                const selected = Array.from(measureCbs).filter(cb => cb.checked).map(cb => cb.value);
+                
+                measurePreview.innerHTML = '';
+                if (selected.length === 0) {
+                    measurePreview.innerHTML = '<li class="text-red-400 font-bold">※措置を選択してください（A・Bから各1つ以上必須）</li>';
+                    ruleMeasurePreview.textContent = '【未選択】';
+                    ruleMeasurePreview.className = 'text-red-600 font-bold bg-red-100 px-1 rounded';
+                    
+                    const agreementPreview = document.getElementById('agreement-measure-preview');
+                    if(agreementPreview) {
+                        agreementPreview.textContent = '【未選択】';
+                        agreementPreview.className = 'ml-4 mt-2 font-bold text-red-600 border-b border-red-600 inline-block min-w-[300px]';
+                    }
+                } else {
+                    selected.forEach(val => {
+                        const li = document.createElement('li');
+                        li.textContent = val;
+                        measurePreview.appendChild(li);
+                    });
+                    ruleMeasurePreview.textContent = selected.join('、');
+                    ruleMeasurePreview.className = 'text-blue-700 font-bold bg-blue-100 px-1 rounded';
+                    
+                    const agreementPreview = document.getElementById('agreement-measure-preview');
+                    if(agreementPreview) {
+                        agreementPreview.textContent = selected.join('、');
+                        agreementPreview.className = 'ml-4 mt-2 font-bold text-slate-800 border-b border-slate-800 inline-block min-w-[300px]';
+                    }
+                }
+            }
+
+            measureCbs.forEach(cb => {
+                cb.addEventListener('change', updateMeasures);
+            });
+        });
+    </script>
+</body>
+</html>
